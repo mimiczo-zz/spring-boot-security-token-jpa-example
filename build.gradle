@@ -1,4 +1,4 @@
-description = "spring-boot-security-jpa-example"
+description = "spring-boot-security-token-jpa-example"
 
 buildscript {
     repositories {
