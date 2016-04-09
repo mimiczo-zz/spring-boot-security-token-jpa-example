@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="24 hours">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} %-4relative [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="com.mimiczo" level="DEBUG" />
+    <logger name="org.springframework.web" level="DEBUG" />
+    <logger name="org.springframework.security" level="DEBUG" />
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor" level="ERROR"/>
+    <logger name="com.zaxxer.hikari" level="ERROR"/>
+
+   	<logger name="jdbc.sqlonly" level="INFO">
+   		<appender-ref ref="STDOUT" />
+   	</logger>
+  	<logger name="jdbc.sqltiming" level="INFO">
+  		<appender-ref ref="STDOUT" />
+   	</logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+  
+</configuration>

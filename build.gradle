@@ -1,0 +1,138 @@
+description = "spring-boot-security-jpa-example"
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "io.spring.gradle:dependency-management-plugin"
+        //classpath "org.springframework:springloaded:1.2.0.RELEASE"
+        classpath 'org.kordamp.gradle:livereload-gradle-plugin:0.2.1'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'spring-boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'
+apply plugin: 'org.kordamp.gradle.livereload'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    all*.exclude group: "commons-logging"
+    all*.exclude group: "log4j"
+}
+
+sourceSets {
+    generated {
+        java {
+            srcDirs = ['src/main/generated']
+        }
+    }
+}
+
+configurations {
+    querydslapt
+}
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-security"
+    compile "org.springframework.boot:spring-boot-starter-web"
+
+    // RDBMS
+    compile "com.h2database:h2:$h2databaseVersion"
+    compile "mysql:mysql-connector-java:$mysqlConnectorVersion"
+    compile "com.zaxxer:HikariCP:$hikaricpVersion"
+
+    compile "com.mysema.querydsl:querydsl-jpa:$querydslVersion"
+    compile "com.mysema.querydsl:querydsl-apt:$querydslVersion"
+
+    //etc
+    compile "com.google.guava:guava:$guavaVersion"
+    compile "org.projectlombok:lombok:$lombokVersion"
+    compile "org.modelmapper:modelmapper:$modelmapperVersion"
+    
+    //joda
+    compile "joda-time:joda-time:$jodaVersion"
+
+    //etc: jackson
+    compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonVersion"
+
+    //etc: jackson2
+    compile "com.fasterxml.jackson.core:jackson-databind:$jackson2Version"
+    compile "com.fasterxml.jackson.core:jackson-annotations:$jackson2Version"
+
+    //jsoup
+    compile "org.jsoup:jsoup:$jsoupVersion"
+
+    //jwt
+    compile "org.bitbucket.b_c:jose4j:$jwtJoseVersion"
+
+    //logger
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
+    compile "ch.qos.logback:logback-core:$logbackVersion"
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    
+    //apache
+    compile "commons-codec:commons-codec:$apacheCommonVersion"
+
+    //provide
+    providedCompile "org.apache.tomcat.embed:tomcat-embed-jasper"
+
+    //test
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-all:$mockitoVersion"
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework.restdocs:spring-restdocs-mockmvc"
+    //testCompile "org.springframework.security:spring-security-test"
+}
+
+task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types') {
+    source = sourceSets.main.java
+    classpath = configurations.compile + configurations.querydslapt
+    println classpath
+    options.compilerArgs = [
+            '-proc:only',
+            '-processor', 'com.mysema.query.apt.jpa.JPAAnnotationProcessor'
+    ]
+    destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
+    dependencyCacheDir = compileJava.dependencyCacheDir
+}
+
+compileJava {
+	sourceCompatibility = "${javaVersion}"
+    targetCompatibility = "${javaVersion}"
+    options.encoding = "UTF-8"
+	dependsOn generateQueryDSL
+    source generateQueryDSL.destinationDir
+}
+
+compileTestJava {
+	sourceCompatibility = "${javaVersion}"
+    targetCompatibility = "${javaVersion}"
+}
+
+clean {
+    delete sourceSets.generated.java.srcDirs
+}
+
+idea {
+    module {
+        sourceDirs += file('src/main/generated')
+        inheritOutputDirs = false
+    	outputDir = file("$buildDir/classes/main/")
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "$gradleVersion"
+}

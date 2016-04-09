@@ -1,0 +1,63 @@
+spring:
+  profiles.active: test
+  resources:
+    cache-period: 3600
+  freemarker:
+    checkTemplateLocation: false
+logging:
+  config: classpath:logback.xml
+---
+spring:
+  profiles: test
+  datasource:
+    jdbcUrl: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
+    serverName: test
+    dataSourceClassName: org.h2.jdbcx.JdbcDataSource
+    connectionTimeout: 30000
+    validationTimeout: 5000
+    minIdle: 3
+    maxIdle: 10
+    sql-script-encoding: UTF-8
+  jpa:
+    database: H2
+    show_sql: true
+    ddl_auto: create
+    naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    dialect: org.hibernate.dialect.H2Dialect
+    format_sql: true
+    use_sql_comments: true
+    new_generator_mappings: true
+server:
+  port : 8099
+  servlet-path: /
+
+---
+spring:
+  profiles: prod
+  datasource:
+    jdbcUrl:  127.0.0.1
+    username: test
+    password: test
+    serverName: test
+    dataSourceClassName: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+    #dataSourceClassName: org.mariadb.jdbc.MySQLDataSource
+    connectionTimeout: 30000
+    validationTimeout: 5000
+    minIdle: 3
+    maxIdle: 10
+    sql-script-encoding: UTF-8
+  jpa:
+    database: Mysql
+    ddl_auto: none
+    show_sql: true
+    naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    dialect: org.hibernate.dialect.MySQLInnoDBDialect
+    #dialect: org.hibernate.dialect.MySQLDialect
+    format_sql: false
+    use_sql_comments: false
+    new_generator_mappings: true
+server:
+  port : 8099
+  servlet-path: /
