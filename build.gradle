@@ -73,7 +73,7 @@ dependencies {
     compile "org.jsoup:jsoup:$jsoupVersion"
 
     //jwt
-    compile "org.bitbucket.b_c:jose4j:$jwtJoseVersion"
+    compile "io.jsonwebtoken:jjwt:$jjwtVersion"
 
     //logger
     compile "ch.qos.logback:logback-classic:$logbackVersion"

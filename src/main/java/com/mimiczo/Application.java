@@ -1,7 +1,6 @@
 package com.mimiczo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mimiczo.support.helper.JoseJwtHelper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -49,10 +48,6 @@ public class Application {
         return new MessageSourceAccessor(messageSource());
     }
 
-    @Bean
-    public JoseJwtHelper joseJwtHelper () {
-        return new JoseJwtHelper();
-    }
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
